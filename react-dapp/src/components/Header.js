@@ -6,7 +6,7 @@ export default function Header() {
   return (
       <PageHeader
         title="NestCoin"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
+        subTitle="Nestcoin the future of film house."
         style={{ cursor: "pointer" }}
       />
   );
