@@ -7,11 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NestCoin is ERC20, ERC20Burnable, Pausable, Ownable {
-    uint256 private maxNumOfAddress;
-
-    constructor() ERC20("NestCoin", "NSC") {
-        maxNumOfAddress = 200;
-    }
+    constructor() ERC20("NestCoin", "NSC") {}
 
     function pause() public onlyOwner {
         _pause();
@@ -34,18 +30,10 @@ contract NestCoin is ERC20, ERC20Burnable, Pausable, Ownable {
     }
 
     function batchTransfer(address[] memory to, uint256 amount) public returns(bool) {
-        require(to.length <= maxNumOfAddress, "Too many addresses");
-        require(to.length > 0, "No address to transfer");
-        require(amount > 0, "Amount must be greater than 0");
-        
         for(uint256 i = 0; i < to.length; i++){
             _mint(to[i], amount);
         }
 
         return true;
-    }
-
-    function setMaxNumOfAddress(uint256 _maxNumOfAddress) public onlyOwner {
-        maxNumOfAddress = _maxNumOfAddress;
     }
 }
