@@ -1,92 +1,76 @@
-import { Upload, message, Card, Button, Input } from "antd";
+import { Upload, message, Card, Button, Input, Table, Row, Col } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import AddressInput from "./AddressInput";
+import { OutTable, ExcelRenderer } from "react-excel-renderer";
+import Column from "antd/lib/table/Column";
+import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+
 const { Dragger } = Upload;
 
 const UploadTokens = () => {
-  const props = {
-    name: "file",
-    multiple: true,
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-  };
+  const [fileName, setFileName] = useState("");
+  const [state, setState] = useState({});
 
-  const [fileList, setFileList] = useState([]);
+  const fileHandler = (event) => {
+    let fileObj = event.target.files[0];
 
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-    console.log(newFileList);
+    setFileName(fileObj.name);
+    //just pass the fileObj as parameter
+    ExcelRenderer(fileObj, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        setState({
+          cols: resp.cols,
+          rows: resp.rows,
+        });
+      }
+    });
   };
 
   return (
     <>
-    <div style={{ padding: 8, marginTop: 32, width: 420, margin: "auto" }}>
-        <Card title="Transfer tokens">
-          <div>
-            <div style={{ padding: 8 }}>
-              <AddressInput
-                // ensProvider={mainnetProvider}
-                placeholder="to address"
-                // value={tokenSendToAddress}
-                // onChange={setTokenSendToAddress}
-              />
-            </div>
-            <div style={{ padding: 8 }}>
-              <Input
-                style={{ textAlign: "center" }}
-                placeholder={"amount of tokens to send"}
-                // value={tokenSendAmount}
-                onChange={e => {
-                  // setTokenSendAmount(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ padding: 8 }}>
-            <Button
-              type={"primary"}
-              // onClick={() => {
-              //   tx(
-              //     writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
-              //   );
-              // }}
-            >
-              Send Tokens
-            </Button>
-          </div>
-        </Card>
+      <div className="ant-upload ant-upload-drag">
+        <label className="custom-file-upload">
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload
+          </p>
+          <p className="ant-upload-hint">
+            Support for a single or bulk upload. Strictly prohibit from
+            uploading company data or other band files
+          </p>
+
+          <input
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            onInput={(event) => fileHandler(event)}
+            style={{ padding: "10px" }}
+          />
+        </label>
       </div>
-      <div
-        id="spreadsheet_output"
-        className="textarea full_width spacer center_text"
-      ></div>
-      {/* <Dragger maxCount={1} onChange={onChange} {...props}>
-      {fileList.length < 5 && '+ Upload'}
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibit from uploading
-          company data or other band files
-        </p>
-      </Dragger> */}
+      <span>{fileName}</span>
+
+      {/* show spreadsheet */}
+      {/* <button onClick={() => console.log(state)}>log it</button> */}
+
+      <Row>
+        <Col span={12} className="">
+          {"Address"}
+          {state.rows
+            ? state.rows.map((data, i) => <p key={i}>{data[1]}</p>)
+            : null}
+        </Col>
+        <Col span={12} className="">
+          {"Amount"}
+          {state.rows
+            ? state.rows.map((data, i) => <p key={i}>{data[2]}</p>)
+            : null}
+        </Col>
+      </Row>
     </>
   );
 };
