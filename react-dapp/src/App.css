@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+  text-align: center;
+}
+
+/* UploadTokens.js */
+input[type=file] {
+  display: none;
+}
+
+.custom-file-upload {
+  /* border: 1px solid #ccc; */
+  /* display: inline-block; */
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
