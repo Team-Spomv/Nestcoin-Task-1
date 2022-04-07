@@ -29,12 +29,13 @@
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.0.0",
-    "hardhat": "^2.3.0",
+    "hardhat": "^2.9.3",
     "husky": "^4.2.5"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
     "antd": "^4.19.5",
-    "react": "17.0.2"
+    "react": "17.0.2",
+    "react-excel-renderer": "^1.1.0"
   }
 }

@@ -35,9 +35,9 @@ function App() {
           <Menu.Item key="/marketplace">
             <Link
               onClick={() => {
-                setRoute("/contracts");
+                setRoute("/marketplace");
               }}
-              to="/contracts"
+              to="/marketplace"
             >
               Marketplace
             </Link>
