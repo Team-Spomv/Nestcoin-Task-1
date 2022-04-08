@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@headlessui/react": "^1.5.0",
     "@metamask/onboarding": "^1.0.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.4",
@@ -15,6 +16,8 @@
     "react-blockies": "^1.4.1",
     "react-dom": "^18.0.0",
     "react-qr-reader": "^3.0.0-beta-1",
+    "react-router": "5",
+    "react-router-dom": "5",
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4",
     "web3modal": "^1.9.6",
@@ -43,5 +46,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.23"
   }
 }
