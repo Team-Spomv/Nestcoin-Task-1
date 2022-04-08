@@ -1,7 +1,14 @@
-import { Button, Row, Col, Title } from "antd";
+import { Button, Row, Col, notification } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { ExcelRenderer } from "react-excel-renderer";
+
+const openNotification = (type, description) => {
+  notification[type]({
+    message: (type==="success") ? type.toUpperCase() : "Loading",
+    description,
+  });
+};
 
 const UploadTokens = (props) => {
   const [fileName, setFileName] = useState("");
@@ -26,10 +33,17 @@ const UploadTokens = (props) => {
   };
 
   // send bulk transfer transaction
-  const sendTransaction = async () => {
+  const sendTransaction = async (address) => {
+
     try {
-      const tx = await props.contract.batchTransfer(['0x7F4cA4B78d555D5Fb1f91abfBb91A1365e0e8802', '0x7F913b411F2C509dc1C8271aFb26160223fa6be8', '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'], props.ethers.utils.parseEther('0.005')._hex);
-      console.log(tx);
+
+      // loading alert to show transaction is being sent
+      openNotification("warning", "Loading...");
+      const tx = await props.contract.batchTransfer(address, props.ethers.utils.parseEther('0.005')._hex);
+      tx.wait();
+
+      // alert success message
+      openNotification("success", "Transaction Successful!");
     } catch (err) {
       console.log(err);
     }
@@ -65,7 +79,7 @@ const UploadTokens = (props) => {
             <Button
               type={"primary"}
               onClick={() => {
-                sendTransaction(state.rows.map(data => data[1]))
+                sendTransaction(state.rows.map(data => data[1] !== undefined ? data[1] : null))
               }}
             >
               Send Tokens
