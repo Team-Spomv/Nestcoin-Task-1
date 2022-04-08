@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NestCoin is ERC20, ERC20Burnable, Pausable, Ownable {
-    constructor() ERC20("NestCoin", "NSC") {}
+    constructor() ERC20("NestCoin Token", "NSC") {}
 
     function pause() public onlyOwner {
         _pause();
@@ -21,16 +21,19 @@ contract NestCoin is ERC20, ERC20Burnable, Pausable, Ownable {
         _mint(to, amount);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        whenNotPaused
-        override
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal override whenNotPaused {
         super._beforeTokenTransfer(from, to, amount);
     }
 
-    function batchTransfer(address[] memory to, uint256 amount) public returns(bool) {
-        for(uint256 i = 0; i < to.length; i++){
+    function batchTransfer(address[] memory to, uint256 amount)
+        public
+        returns (bool)
+    {
+        for (uint256 i = 0; i < to.length; i++) {
             _mint(to[i], amount);
         }
 
