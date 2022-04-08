@@ -2,10 +2,12 @@ import "./App.css";
 import Header from "./components/Header";
 import UploadTokens from "./components/UploadTokens";
 import { Menu, Layout, Breadcrumb, Icon, Divider, Typography } from "antd";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link,  } from "react-router-dom";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
 import Marketplace from "./components/Marketplace";
+import Forup from "./components/forup";
+import { Routes } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -30,36 +32,38 @@ function App() {
               onClick={() => {
                 setRoute("/");
               }}
-              to="/"
-            >
-              NestCoin Tokens
+              to="/" style={{fontSize:"20px", fontWeight:"bold",color:"#F178B6"}}>
+              NestCoin Tokens 
+              
             </Link>
+            
           </Menu.Item>
+          
           <Menu.Item key="/marketplace">
             <Link
               onClick={() => {
                 setRoute("/marketplace");
               }}
-              to="/marketplace"
+              to="/Marketplace"
+              style={{fontSize:"20px", fontWeight:"bold",color:"#F178B6",}}
             >
               Marketplace
             </Link>
+  
           </Menu.Item>
         </Menu>
-
-        <Switch>
-          <Route exact path="/">
-            <div style={{ padding: "2rem" }}>
-              <Title>Transfer Tokens</Title>
-              <UploadTokens />
-            </div>
-            <Divider />
-          </Route>
-          <Route path="/marketplace"></Route>
-        </Switch>
+              
+        <Routes>
+          <Route exact path="/" element={<Forup/>}/>
+          
+          {/* <Route path="/marketplace"></Route> */}
+          <Route path = "/marketplace" element={<Marketplace/>} />
+           
+        </Routes>
             </Router>
     </div>
   );
 }
 
 export default App;
+ 

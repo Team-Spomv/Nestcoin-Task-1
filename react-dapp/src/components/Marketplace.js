@@ -44,7 +44,7 @@ const Marketplace = (props) => {
 
             <Popover>
               <div className="pt-6 px-4 sm:px-6 lg:px-8 ">
-                <nav
+                {/* <nav
                   className="relative flex items-center  justify-between sm:h-10 "
                   aria-label="Global"
                 >
@@ -73,7 +73,7 @@ const Marketplace = (props) => {
                       Connect Wallet
                     </button>
                   </div>
-                </nav>
+                </nav> */}
               </div>
 
               <Transition
