@@ -54,6 +54,18 @@ const UploadTokens = () => {
       </div>
       <span>{fileName}</span>
 
+      <div style={{ padding: 8 }}>
+            <Button
+              type={"primary"}
+              onClick={() => {
+                // tx(
+                //   writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
+                // );
+              }}
+            >
+              Send Tokens
+            </Button>
+          </div>
       {/* show spreadsheet */}
       {/* <button onClick={() => console.log(state)}>log it</button> */}
 
