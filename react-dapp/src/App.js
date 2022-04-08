@@ -1,15 +1,16 @@
-import "./App.css";
-import Header from "./components/Header";
-import UploadTokens from "./components/UploadTokens";
-import { Menu, Layout, Breadcrumb, Icon, Divider, Typography } from "antd";
+
+import './App.css';
+import Header from './components/Header';
+import UploadTokens from './components/UploadTokens';
+import {Menu, Layout, Breadcrumb, Icon, Divider, Typography} from 'antd';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import "antd/dist/antd.css";
-import React, { useState, useEffect } from "react";
-import Marketplace from "./components/Marketplace";
+import 'antd/dist/antd.css';
+import React, { useState, useEffect } from 'react';
 
 const { Title } = Typography;
 
 function App() {
+
   const [route, setRoute] = useState();
 
   useEffect(() => {
@@ -19,12 +20,8 @@ function App() {
   return (
     <div className="App">
       <Header />
-       <Router>
-        <Menu
-          style={{ textAlign: "center" }}
-          selectedKeys={[route]}
-          mode="horizontal"
-        >
+      <Router>
+      <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -49,15 +46,18 @@ function App() {
 
         <Switch>
           <Route exact path="/">
-            <div style={{ padding: "2rem" }}>
+            <div style={{ padding: '2rem'}}>
               <Title>Transfer Tokens</Title>
-              <UploadTokens />
-            </div>
+          <UploadTokens />
+          </div>
             <Divider />
+
           </Route>
-          <Route path="/marketplace"></Route>
+          <Route path="/marketplace">
+            
+          </Route>
         </Switch>
-            </Router>
+        </Router>
     </div>
   );
 }
