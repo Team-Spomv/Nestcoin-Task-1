@@ -1,20 +1,23 @@
-import { Upload, message, Card, Button, Input, Table, Row, Col } from "antd";
+import { Button, Row, Col, notification } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import AddressInput from "./AddressInput";
-import { OutTable, ExcelRenderer } from "react-excel-renderer";
-import Column from "antd/lib/table/Column";
-import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import { ExcelRenderer } from "react-excel-renderer";
 
-const { Dragger } = Upload;
+const openNotification = (type, description) => {
+  notification[type]({
+    message: (type==="success") ? type.toUpperCase() : "Loading",
+    description,
+  });
+};
 
-const UploadTokens = () => {
+const UploadTokens = (props) => {
   const [fileName, setFileName] = useState("");
   const [state, setState] = useState({});
 
   const fileHandler = (event) => {
     let fileObj = event.target.files[0];
 
+    // get addresses from uploaded spreadsheet file
     setFileName(fileObj.name);
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
@@ -29,8 +32,26 @@ const UploadTokens = () => {
     });
   };
 
+  // send bulk transfer transaction
+  const sendTransaction = async (address) => {
+
+    try {
+
+      // loading alert to show transaction is being sent
+      openNotification("warning", "Loading...");
+      const tx = await props.contract.batchTransfer(address, props.ethers.utils.parseEther('0.005')._hex);
+      tx.wait();
+
+      // alert success message
+      openNotification("success", "Transaction Successful!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
+
       <div className="ant-upload ant-upload-drag">
         <label className="custom-file-upload">
           <p className="ant-upload-drag-icon">
@@ -58,16 +79,12 @@ const UploadTokens = () => {
             <Button
               type={"primary"}
               onClick={() => {
-                // tx(
-                //   writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
-                // );
+                sendTransaction(state.rows.map(data => data[1] !== undefined ? data[1] : null))
               }}
             >
               Send Tokens
             </Button>
           </div>
-      {/* show spreadsheet */}
-      {/* <button onClick={() => console.log(state)}>log it</button> */}
 
       <Row>
         <Col span={12} className="">
