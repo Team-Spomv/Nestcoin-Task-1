@@ -1,18 +1,16 @@
-import { Upload, Button, Row, Col, Title } from "antd";
+import { Button, Row, Col, Title } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { ExcelRenderer } from "react-excel-renderer";
-import Header from "./Header";
 
-const { Dragger } = Upload;
-
-const UploadTokens = () => {
+const UploadTokens = (props) => {
   const [fileName, setFileName] = useState("");
   const [state, setState] = useState({});
 
   const fileHandler = (event) => {
     let fileObj = event.target.files[0];
 
+    // get addresses from uploaded spreadsheet file
     setFileName(fileObj.name);
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
@@ -25,6 +23,16 @@ const UploadTokens = () => {
         });
       }
     });
+  };
+
+  // send bulk transfer transaction
+  const sendTransaction = async () => {
+    try {
+      const tx = await props.contract.batchTransfer(['0x7F4cA4B78d555D5Fb1f91abfBb91A1365e0e8802', '0x7F913b411F2C509dc1C8271aFb26160223fa6be8', '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'], props.ethers.utils.parseEther('0.005')._hex);
+      console.log(tx);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -57,10 +65,7 @@ const UploadTokens = () => {
             <Button
               type={"primary"}
               onClick={() => {
-                // state.rows.map((data, i) => console.log(data[1]))
-                // tx(
-                //   writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
-                // );
+                sendTransaction(state.rows.map(data => data[1]))
               }}
             >
               Send Tokens

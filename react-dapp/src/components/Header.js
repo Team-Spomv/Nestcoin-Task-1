@@ -1,10 +1,15 @@
-import { Button, PageHeader, Alert } from "antd";
+import { Button, PageHeader, Alert, notification } from "antd";
 import { useEffect, useState } from "react";
 import MetaMaskOnboarding from "@metamask/onboarding";
-import { ethers } from "ethers";
-import CONSTANTS from "../utils/constants";
 
-// displays a page header
+
+const openNotification = (err) => {
+  notification.open({
+    message: 'Notification Title',
+    description:
+      err,
+  });
+};
 
 export default function Header() {
   const { ethereum } = window;
@@ -26,9 +31,6 @@ export default function Header() {
     chainId: "",
   });
 
-  const [formData, setformData] = useState({ addressTo: "", amount: "", keyword: "", message: "" });
-
-  const [contract, setContract] = useState({});
 
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
@@ -62,33 +64,21 @@ export default function Header() {
     }
   };
 
-  const callFunc = () => {
-    try {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-      const address = signer.getAddress();
-      const contract = new ethers.Contract(
-        CONSTANTS.CONTRACT_ADDRESS_NESTCOIN,
-        CONSTANTS.NESTCOIN_ABI,
-        signer
-      );
-      setContract(contract);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   try {
     ethereum.on("accountsChanged", (accounts) => {
       console.log("accounts changed", accounts);
     });
   } catch (err) {
+    // openNotification(err);
     console.error(err);
-
   }
 
   if (onboardButton.text === "Connect Wallet" && accountDetails.account) {
-    setOnboardButton({...onboardButton, text: "Wallet Connected", disabled: true});
+    setOnboardButton({
+      ...onboardButton,
+      text: "Wallet Connected",
+      disabled: true,
+    });
     connectWallet();
   }
 
@@ -100,21 +90,7 @@ export default function Header() {
       setOnboardButton({ text: "Install Metamask ", disabled: false });
     }
 
-    
-    callFunc();
   }, []);
-
-  // send transaction
-
-  const sendTransaction = async () => {
-    try {
-      // console.log('amount', ethers.utils.parseEther('0.0005')._hex);
-      const tx = await contract.batchTransfer(['0x7F4cA4B78d555D5Fb1f91abfBb91A1365e0e8802', '0x7F913b411F2C509dc1C8271aFb26160223fa6be8', '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'], ethers.utils.parseEther('0.005')._hex);
-      console.log(tx);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -124,41 +100,38 @@ export default function Header() {
         style={{ cursor: "pointer" }}
       />
       <div style={{ padding: 8 }}>
-        <Button
-          id="connectButton"
-          type={"primary"}
-          onClick={() => {
-            if (typeof window.ethereum === "undefined") {
-              let onboarding = new MetaMaskOnboarding({ forwarderOrigin });
-              onboarding.startOnboarding();
-              setOnboardButton({ text: "Onboarding", disabled: true });
-            } else {
-              connectWallet();
-            }
-          }}
-          disabled={onboardButton.text === "Connect Wallet" && accountDetails.account ? true : onboardButton.text === "Onboarding" ? true : onboardButton.disabled}
-        >
-          {onboardButton.text}
-        </Button>
         <div style={{ margin: "1rem" }}>
           <Button
+            id="connectButton"
             type={"primary"}
-            onClick={
-              // async () => {
-                () => {
-                 sendTransaction();
-              // const transaction = await contract.balanceOf(
-              //   accountDetails.account
-              // );
-              // const balance = Number(transaction._hex);
-              // console.log("balance", balance);
-              // console.log(transaction);
+            onClick={() => {
+              if (typeof window.ethereum === "undefined") {
+                let onboarding = new MetaMaskOnboarding({ forwarderOrigin });
+                onboarding.startOnboarding();
+                setOnboardButton({ text: "Onboarding", disabled: true });
+              } else {
+                connectWallet();
+              }
             }}
+            disabled={
+              onboardButton.text === "Connect Wallet" && accountDetails.account
+                ? true
+                : onboardButton.text === "Onboarding"
+                ? true
+                : onboardButton.disabled
+            }
           >
-            Send Tokens
+            {onboardButton.text}
           </Button>
         </div>
-<Alert message={accountDetails.account ? accountDetails.account : "account not connected"} type="success" />
+        <Alert
+          message={
+            accountDetails.account
+              ? accountDetails.account
+              : "account not connected"
+          }
+          type="success"
+        />
         <Alert
           message={
             accountDetails.network === "1"
@@ -179,8 +152,6 @@ export default function Header() {
           }
           type="info"
         />
-        {/* <p>{accountDetails.account}</p>
-        <p>{accountDetails.network}</p> */}
       </div>
     </>
   );
