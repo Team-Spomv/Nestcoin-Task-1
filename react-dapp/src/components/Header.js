@@ -27,7 +27,13 @@ export default function Header() {
 
   const [onboardButton, setOnboardButton] = useState({
     text: "Install MetaMask",
-    onClick: onClickConnect,
+    onClick: () => {
+      if(window.ethereum === undefined) {
+        alert('MetaMask is not installed')
+        setOnboardButton({ text: "Click here to install MetaMask! ", disabled: true });
+  
+        return 
+      }},
     disabled: false,
   });
 
@@ -55,7 +61,7 @@ export default function Header() {
 
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const NestCoin = new ethers.Contract(
+    const NestCoin = new ethers.Contract();
   };
 
   const [contract, setContract] = useState({});
