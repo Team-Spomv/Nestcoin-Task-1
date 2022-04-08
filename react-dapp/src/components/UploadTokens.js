@@ -1,10 +1,8 @@
-import { Upload, message, Card, Button, Input, Table, Row, Col } from "antd";
+import { Upload, Button, Row, Col, Title } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import AddressInput from "./AddressInput";
-import { OutTable, ExcelRenderer } from "react-excel-renderer";
-import Column from "antd/lib/table/Column";
-import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import { ExcelRenderer } from "react-excel-renderer";
+import Header from "./Header";
 
 const { Dragger } = Upload;
 
@@ -31,6 +29,7 @@ const UploadTokens = () => {
 
   return (
     <>
+
       <div className="ant-upload ant-upload-drag">
         <label className="custom-file-upload">
           <p className="ant-upload-drag-icon">
@@ -58,6 +57,7 @@ const UploadTokens = () => {
             <Button
               type={"primary"}
               onClick={() => {
+                // state.rows.map((data, i) => console.log(data[1]))
                 // tx(
                 //   writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
                 // );
@@ -66,8 +66,6 @@ const UploadTokens = () => {
               Send Tokens
             </Button>
           </div>
-      {/* show spreadsheet */}
-      {/* <button onClick={() => console.log(state)}>log it</button> */}
 
       <Row>
         <Col span={12} className="">
