@@ -13,16 +13,18 @@ contract MyToken is ERC721, ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     /**
-    * @dev mint event for frontend consumption. 
-    */
+    * @dev mint event for frontend consumption.
+        */
     event NFTMinted(address indexed _sender, uint256 _tokenId);
 
-    constructor() ERC721("NestCoin", "NCN") {}
+    constructor(address tokenAddress) ERC721("NestCoin", "NCN") {
+        nestCoin = NestCoin(tokenAddress);
+    }
 
     /**
     * @dev Mints the token, adds a unique ID and
-    * sets the token metadata.
-    */
+        * sets the token metadata.
+        */
     function safeMint(address to, string memory uri) public returns(uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         uri = string(abi.encodePacked("{'name': 'Subaru Boy ", tokenId , "', 'image': 'https://ipfs.io/ipfs/ QmPLUFGapx7QCMLKcBXSjmRj9nv1DVMbaqhCoqosmuNENP', 'description': 'A collection of super rare Subaru boys.'}"));
@@ -35,26 +37,27 @@ contract MyToken is ERC721, ERC721URIStorage, Ownable {
 
     /**
     * @dev destroys tokenId
-    */
+        */
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
-   /**
-   * @dev set tokenURI for tokenId.
-   */
+    /**
+    * @dev set tokenURI for tokenId.
+       */
     function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
+    public
+    view
+    override(ERC721, ERC721URIStorage)
+    returns (string memory)
     {
         return super.tokenURI(tokenId);
     }
 
-    function awardItem(address minter, string memory metadataURI, uint256 price){
+    function awardItem( string memory metadataURI, uint256 price) public returns(uint256){
         nestCoin.transferFrom(msg.sender, address (this), price);
-        uint256 newToken = safeMint(minter, matadataURI);
+        uint256 newToken = safeMint(msg.sender, metadataURI);
+        return newToken;
 
     }
 }
