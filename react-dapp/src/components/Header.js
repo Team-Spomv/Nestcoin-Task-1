@@ -1,14 +1,19 @@
-import { Button, PageHeader } from "antd";
-// import WalletConnectProvider from "@walletconnect/web3-provider";
-// import Web3Modal from "web3modal";
+import { Button, PageHeader, Alert, notification } from "antd";
 import { useEffect, useState } from "react";
 import MetaMaskOnboarding from "@metamask/onboarding";
-import { ethers } from "ethers";
-import { requestAccounts } from "./BasicActions";
 
-// displays a page header
+
+const openNotification = (err) => {
+  notification.open({
+    message: 'Notification Title',
+    description:
+      err,
+  });
+};
 
 export default function Header() {
+  const { ethereum } = window;
+
   const currentUrl = new URL(window.location.href);
   const forwarderOrigin =
     currentUrl.hostname === "localhost" ? "http://localhost:9010" : undefined;
@@ -20,6 +25,13 @@ export default function Header() {
     disabled: false,
   });
 
+  const [accountDetails, setAccountDetails] = useState({
+    account: "",
+    network: "",
+    chainId: "",
+  });
+
+
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
       console.log("MetaMask is installed!");
@@ -28,59 +40,57 @@ export default function Header() {
     }
 
     try {
+      // alert("MetaMask is installed!");
+
       const addressArray = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
+      const chainId = await ethereum.request({
+        method: "eth_chainId",
+      });
+      const networkId = await ethereum.request({
+        method: "net_version",
+      });
+      setAccountDetails({
+        ...accountDetails,
+        account: addressArray[0],
+        chainId: chainId,
+        network: networkId,
+      });
+
+      console.log("account details 📈:", accountDetails);
     } catch (error) {
       console.error(error);
     }
   };
 
+  try {
+    ethereum.on("accountsChanged", (accounts) => {
+      console.log("accounts changed", accounts);
+    });
+  } catch (err) {
+    // openNotification(err);
+    console.error(err);
+  }
+
+  if (onboardButton.text === "Connect Wallet" && accountDetails.account) {
+    setOnboardButton({
+      ...onboardButton,
+      text: "Wallet Connected",
+      disabled: true,
+    });
+    connectWallet();
+  }
+
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
       setOnboardButton({ text: "Connect Wallet", disabled: false });
+      connectWallet();
     } else {
       setOnboardButton({ text: "Install Metamask ", disabled: false });
     }
+
   }, []);
-
-  const [accountDetails, setAccountDetails] = useState({
-    account: "",
-    network: "",
-    chainId: "",
-  });
-
-  const onClickConnect = async () => {
-    if (window.ethereum === undefined) {
-      alert("MetaMask is not installed");
-      setOnboardButton({
-        text: "Click here to install MetaMask! ",
-        disabled: true,
-      });
-
-      return;
-    }
-    // else {
-    //   alert('This is connect button')
-
-    // }
-    // try {
-    //   const newAccounts = requestAccounts();
-    //   handleNewAccounts(newAccounts);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-  };
-
-  const getEthereumContracts = () => {
-    const { ethereum } = window;
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    const NestCoin = new ethers.Contract();
-  };
-
-  const [contract, setContract] = useState({});
 
   return (
     <>
@@ -90,19 +100,58 @@ export default function Header() {
         style={{ cursor: "pointer" }}
       />
       <div style={{ padding: 8 }}>
-        <Button
-          id="connectButton"
-          type={"primary"}
-          onClick={() => {
-            connectWallet();
-          }}
-          disabled={onboardButton.disabled}
-        >
-          {onboardButton.text}
-        </Button>
-        <p>{accountDetails.account}</p>
-        <p>{accountDetails.chainId}</p>
-        <p>{accountDetails.network}</p>
+        <div style={{ margin: "1rem" }}>
+          <Button
+            id="connectButton"
+            type={"primary"}
+            onClick={() => {
+              if (typeof window.ethereum === "undefined") {
+                let onboarding = new MetaMaskOnboarding({ forwarderOrigin });
+                onboarding.startOnboarding();
+                setOnboardButton({ text: "Onboarding", disabled: true });
+              } else {
+                connectWallet();
+              }
+            }}
+            disabled={
+              onboardButton.text === "Connect Wallet" && accountDetails.account
+                ? true
+                : onboardButton.text === "Onboarding"
+                ? true
+                : onboardButton.disabled
+            }
+          >
+            {onboardButton.text}
+          </Button>
+        </div>
+        <Alert
+          message={
+            accountDetails.account
+              ? accountDetails.account
+              : "account not connected"
+          }
+          type="success"
+        />
+        <Alert
+          message={
+            accountDetails.network === "1"
+              ? "mainnet"
+              : accountDetails.network === "3"
+              ? "ropsten"
+              : accountDetails.network === "4"
+              ? "rinkeby"
+              : accountDetails.network === "5"
+              ? "goerli"
+              : accountDetails.network === "6"
+              ? "kotti"
+              : accountDetails.network === "2018"
+              ? "dev"
+              : accountDetails.network === "7"
+              ? "mordor"
+              : "localhost"
+          }
+          type="info"
+        />
       </div>
     </>
   );

@@ -1,20 +1,25 @@
-import { Upload, message, Card, Button, Input, Table, Row, Col } from "antd";
+import { Button, Row, Col, notification, Input } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import AddressInput from "./AddressInput";
-import { OutTable, ExcelRenderer } from "react-excel-renderer";
-import Column from "antd/lib/table/Column";
-import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import { ExcelRenderer } from "react-excel-renderer";
 
-const { Dragger } = Upload;
+const openNotification = (type, description) => {
+  notification[type]({
+    message: type === "warning" ? "LOADING..." : type.toUpperCase(),
+    description,
+  });
+};
 
-const UploadTokens = () => {
+const UploadTokens = (props) => {
   const [fileName, setFileName] = useState("");
   const [state, setState] = useState({});
+  // Token Amount to be sent
+  const [amountToSend, setAmountToSend] = useState();
 
   const fileHandler = (event) => {
     let fileObj = event.target.files[0];
 
+    // get addresses from uploaded spreadsheet file
     setFileName(fileObj.name);
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
@@ -27,6 +32,24 @@ const UploadTokens = () => {
         });
       }
     });
+  };
+
+  // send bulk transfer transaction
+  const sendTransaction = async (address) => {
+    try {
+      // loading alert to show transaction is being sent
+      openNotification("warning", "Loading...");
+      const tx = await props.contract.batchTransfer(
+        address,
+        props.ethers.utils.parseEther(String(amountToSend))._hex
+      );
+      tx.wait();
+
+      // alert success message
+      openNotification("success", "Transaction Successful!");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -54,20 +77,45 @@ const UploadTokens = () => {
       </div>
       <span>{fileName}</span>
 
+      <div
+        value={`${amountToSend} `}
+        suffix="NestCoin(NSC)"
+        onChange={(e) => {
+          setAmountToSend(e.target.value);
+          console.log(amountToSend);
+        }}
+        style={{ margin: "1rem 0" }}
+      >
+        <Input placeholder="NestCoin(NSC) Amount to be sent" />
+      </div>
+
       <div style={{ padding: 8 }}>
-            <Button
-              type={"primary"}
-              onClick={() => {
-                // tx(
-                //   writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
-                // );
-              }}
-            >
-              Send Tokens
-            </Button>
-          </div>
-      {/* show spreadsheet */}
-      {/* <button onClick={() => console.log(state)}>log it</button> */}
+        <Button
+          type={"primary"}
+          onClick={() => {
+            // send bulk transfer transaction
+            !state.rows
+              ? openNotification("error", "Please upload a file")
+              : !amountToSend
+              ? openNotification(
+                  "error",
+                  "Please enter the amount you want to send"
+                )
+              : state.rows.length > 200
+              ? openNotification(
+                  "error",
+                  "Maximum number of addresses exceeded,        \n \n Reduce number to 200"
+                )
+              : sendTransaction(
+                  state.rows.map((data) =>
+                    data[1] !== undefined ? data[1] : null
+                  )
+                );
+          }}
+        >
+          Send Tokens
+        </Button>
+      </div>
 
       <Row>
         <Col span={12} className="">

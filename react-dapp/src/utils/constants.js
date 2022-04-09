@@ -1,0 +1,10 @@
+import Abi from "./nestcoinAbi.json";
+
+const CONSTANTS = {
+  PRIVATE_KEY:
+    "de557f686ccf884254afdd485b14584546c7157b4dd0c12e217b9ce19897e682",
+  CONTRACT_ADDRESS_NESTCOIN: "0x12BB0DE4f52389A8b94A7b3C579abFF20dd0B0Ef",
+  NESTCOIN_ABI: Abi,
+};
+
+export default CONSTANTS;
