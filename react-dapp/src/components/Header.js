@@ -1,15 +1,6 @@
-import { Button, PageHeader, Alert, notification } from "antd";
+import { Button, PageHeader, Alert } from "antd";
 import { useEffect, useState } from "react";
 import MetaMaskOnboarding from "@metamask/onboarding";
-
-
-const openNotification = (err) => {
-  notification.open({
-    message: 'Notification Title',
-    description:
-      err,
-  });
-};
 
 export default function Header() {
   const { ethereum } = window;

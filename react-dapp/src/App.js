@@ -1,17 +1,22 @@
 import "./App.css";
 import Header from "./components/Header";
 import UploadTokens from "./components/UploadTokens";
-import { Menu, Divider, Typography } from "antd";
+import { Menu, Divider, Typography, notification } from "antd";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
 import Marketplace from "./components/Marketplace";
-import { Button, Alert } from "antd";
-import MetaMaskOnboarding from "@metamask/onboarding";
 import { ethers } from "ethers";
 import CONSTANTS from "./utils/constants";
 
 const { Title } = Typography;
+
+const openNotification = (type, description) => {
+  notification[type]({
+    message: type === "warning" ? "LOADING..." : type.toUpperCase(),
+    description,
+  });
+};
 
 function App() {
   // Route setup
@@ -83,7 +88,7 @@ function App() {
           <Route exact path="/">
             <div style={{ padding: "2rem" }}>
               <Title>Transfer Tokens</Title>
-              <UploadTokens contract={contract} ethers={ethers} />
+              <UploadTokens openNotification={openNotification} contract={contract} ethers={ethers} />
             </div>
             <Divider />
           </Route>
