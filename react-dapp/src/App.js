@@ -79,6 +79,16 @@ function App() {
               Marketplace
             </Link>
           </Menu.Item>
+          <Menu.Item key="/portfolio">
+            <Link
+              onClick={() => {
+                setRoute("/portfolio");
+              }}
+              to="/portfolio"
+            >
+              Portfolio
+            </Link>
+          </Menu.Item>
         </Menu>
         <Switch>
           <Route exact path="/">
