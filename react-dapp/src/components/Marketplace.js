@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import CONSTANTS from "../utils/constants";
+import OpenNotification from "./Notifier";
 
 const Marketplace = (props) => {
     const { contract } = props;
@@ -20,6 +21,8 @@ const Marketplace = (props) => {
             CONSTANTS.NFT_CONTRACT_ADDRES,
             ethers.utils.parseEther("2")._hex
         );
+        await trx.wait();
+        OpenNotification("success", "transaction approved");
         await awardItem();
     };
 
@@ -41,6 +44,8 @@ const Marketplace = (props) => {
                     gasLimit: 5000000,
                 }
             );
+            await trx.wait();
+            OpenNotification("success", "transaction successfull ");
             console.log("awarded", trx);
         } catch (err) {
             console.log(err);
@@ -75,7 +80,7 @@ const Marketplace = (props) => {
                             NFTs MarketPlace
                         </h2>
                         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
-                            {NFTList.length &&
+                            {NFTList.length ? (
                                 NFTList.map((nft) => (
                                     <div
                                         key={nft.name}
@@ -115,7 +120,10 @@ const Marketplace = (props) => {
                                             </button>
                                         </div>
                                     </div>
-                                ))}
+                                ))
+                            ) : (
+                                <div />
+                            )}
                         </div>
                     </div>
                 </div>

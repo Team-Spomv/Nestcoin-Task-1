@@ -1,7 +1,8 @@
-import { Row, Col, Card } from "antd";
+import { Row, Col, Card, Button } from "antd";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import CONSTANTS from "../utils/constants";
+import axios from "axios";
 
 const Portfolio = () => {
     const [portfolio, setPortfolio] = useState([]);
@@ -14,10 +15,13 @@ const Portfolio = () => {
         const url = `https://api.etherscan.io/api?module=account&action=tokennfttx&contractaddress=${
             CONSTANTS.NFT_CONTRACT_ADDRES
         }&address=${address}&page=1&offset=100&startblock=0&endblock=27025780&sort=asc&apikey=${"T7GW314ZY1GCCBHAIFIE2ZT9ETJU5R6RJC"}`;
-        const res = await fetch(url);
-        console.log(res, "ressssssssssssssssss");
-        console.log(res.status);
-        setPortfolio(res.result);
+        const res = await axios.get(url);
+
+        console.log(res.data.result, {
+            address,
+            c: CONSTANTS.NFT_CONTRACT_ADDRES,
+        });
+        setPortfolio(res.data.result);
     };
     useEffect(() => {
         getMyToken();
