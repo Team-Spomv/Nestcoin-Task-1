@@ -1,14 +1,10 @@
-import { Button, Row, Col, notification, Input } from "antd";
+import { Button, Row, Col, Input } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { ExcelRenderer } from "react-excel-renderer";
+import OpenNotification from "./Notifier";
 
-const openNotification = (type, description) => {
-  notification[type]({
-    message: type === "warning" ? "LOADING..." : type.toUpperCase(),
-    description,
-  });
-};
+let openNotification = OpenNotification;
 
 const UploadTokens = (props) => {
   const [fileName, setFileName] = useState("");
