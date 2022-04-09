@@ -1,11 +1,12 @@
 import "./App.css";
 import Header from "./components/Header";
 import UploadTokens from "./components/UploadTokens";
+import Marketplace from "./components/Marketplace";
 import { Menu, Layout, Breadcrumb, Icon, Divider, Typography } from "antd";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
-import Marketplace from "./components/Marketplace";
+import Portfolio from "./components/Portfolio";
 
 const { Title } = Typography;
 
@@ -19,7 +20,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-       <Router>
+      <Router>
         <Menu
           style={{ textAlign: "center" }}
           selectedKeys={[route]}
@@ -47,7 +48,7 @@ function App() {
           </Menu.Item>
         </Menu>
 
-        <Switch>
+        <Routes>
           <Route exact path="/">
             <div style={{ padding: "2rem" }}>
               <Title>Transfer Tokens</Title>
@@ -55,9 +56,16 @@ function App() {
             </div>
             <Divider />
           </Route>
-          <Route path="/marketplace"></Route>
-        </Switch>
-            </Router>
+          <Route path="/marketplace">
+            <Title>Marketplace</Title>
+            <Marketplace />
+          </Route>
+          <Route path="/portfolio">
+            <Title>Portfolio</Title>
+            <Portfolio />
+          </Route>
+        </Routes>
+      </Router>
     </div>
   );
 }
