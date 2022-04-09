@@ -1,5 +1,5 @@
-import { Row, Col, Card, Button } from "antd";
-import { ethers } from "hardhat";
+import { Row, Col, Card } from "antd";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import CONSTANTS from "../utils/constants";
 
