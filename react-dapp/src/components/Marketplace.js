@@ -1,7 +1,5 @@
 import { Fragment, useState } from "react";
 
-import { Popover, Transition } from "@headlessui/react";
-import { FaBars, FaTimesCircle } from "react-icons/fa";
 import NFTs from "../NFT";
 
 const Marketplace = (props) => {
@@ -30,9 +28,7 @@ const Marketplace = (props) => {
   return (
     <>
       <div className="relative bg-white overflow-hidden z-5">
-        <div className="max-w-7xl mx-auto">
-         
-        </div>
+        <div className="max-w-7xl mx-auto"></div>
       </div>
       <>
         <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">

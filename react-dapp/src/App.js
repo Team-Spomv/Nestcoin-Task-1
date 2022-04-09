@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import Marketplace from "./components/Marketplace";
 import { ethers } from "ethers";
 import CONSTANTS from "./utils/constants";
+import Portfolio from "./components/Portfolio";
 
 const { Title } = Typography;
 
@@ -83,6 +84,16 @@ function App() {
               Marketplace
             </Link>
           </Menu.Item>
+          <Menu.Item key="/portfolio">
+            <Link
+              onClick={() => {
+                setRoute("/portfolio");
+              }}
+              to="/portfolio"
+            >
+              Portfolio
+            </Link>
+          </Menu.Item>
         </Menu>
         <Switch>
           <Route exact path="/">
@@ -94,6 +105,9 @@ function App() {
           </Route>
           <Route path="/marketplace">
             <Marketplace />
+          </Route>
+          <Route path="/portfolio">
+            <Portfolio />
           </Route>
         </Switch>
       </BrowserRouter>
