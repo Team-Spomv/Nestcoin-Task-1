@@ -17,7 +17,9 @@ contract MyToken is ERC721, ERC721URIStorage, Ownable {
      */
     event NFTMinted(address indexed _sender, uint256 _tokenId);
 
-    constructor() ERC721("NestCoin", "NCN") {}
+    constructor(address tokenAddress) ERC721("NestCoin", "NCN") {
+        nestCoin = NestCoin(tokenAddress);
+    }
 
     /**
      * @dev Mints the token, adds a unique ID and
@@ -61,12 +63,12 @@ contract MyToken is ERC721, ERC721URIStorage, Ownable {
         return super.tokenURI(tokenId);
     }
 
-    function awardItem(
-        address minter,
-        string memory metadataURI,
-        uint256 price
-    ) {
+    function awardItem(string memory metadataURI, uint256 price)
+        public
+        returns (uint256)
+    {
         nestCoin.transferFrom(msg.sender, address(this), price);
-        uint256 newToken = safeMint(minter, matadataURI);
+        uint256 newToken = safeMint(msg.sender, metadataURI);
+        return newToken;
     }
 }
